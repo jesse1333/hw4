@@ -17,7 +17,7 @@ struct KeyError
  * other additional helper functions. You do NOT need to implement any functionality or
  * add additional data members or helper functions.
  */
- 
+
 template <typename Key, typename Value>
 class AVLNode : public Node<Key, Value>
 {
@@ -480,7 +480,7 @@ template <class Key, class Value>
 void AVLTree<Key, Value>::remove(const Key &key)
 {
     // TODO
-    AVLNode<Key, Value> *n = internalFind(key);
+    AVLNode<Key, Value> *n = static_cast<AVLNode<Key, Value> *>(this->internalFind(key));
     AVLNode<Key, Value> *p;
     int diff = 0;
 
@@ -520,8 +520,8 @@ void AVLTree<Key, Value>::remove(const Key &key)
     }
 
     // remove code from BST
-    Node<Key, Value> *parentNode = n->getParent();
-    Node<Key, Value> *child = n->getLeft();
+    AVLNode<Key, Value> *parentNode = n->getParent();
+    AVLNode<Key, Value> *child = n->getLeft();
     if (n->getRight() != nullptr)
     {
         child = n->getRight();
@@ -537,7 +537,6 @@ void AVLTree<Key, Value>::remove(const Key &key)
     }
     else
     {
-        // Node<Key, Value> *temp = currentNode->getParent();
         if (n == parentNode->getLeft())
         {
             parentNode->setLeft(child);
@@ -552,6 +551,9 @@ void AVLTree<Key, Value>::remove(const Key &key)
         }
     }
 
+    delete n;
+
+    removeFix(parentNode, diff);
 }
 
 template <class Key, class Value>
@@ -572,7 +574,7 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value> *n, int diff)
         {
             ndiff = 1;
         }
-        else if (p->getRight == n)
+        else if (p->getRight() == n)
         {
             ndiff = -1;
         }
@@ -644,7 +646,7 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value> *n, int diff)
         {
             //[Perform the check for the mirror case where b(n) + diff == +2, flipping left/right and -1/+1]
 
-            c = n->getLeft();
+            c = n->getRight();
 
             if (c->getBalance() == 1)
             {
