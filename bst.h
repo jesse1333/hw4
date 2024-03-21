@@ -562,7 +562,6 @@ void BinarySearchTree<Key, Value>::remove(const Key &key)
     }
     else
     {
-        // Node<Key, Value> *temp = currentNode->getParent();
         if (currentNode == parentNode->getLeft())
         {
             parentNode->setLeft(child);
@@ -576,6 +575,8 @@ void BinarySearchTree<Key, Value>::remove(const Key &key)
             child->setParent(parentNode);
         }
     }
+
+    delete currentNode;
 }
 
 template <typename Key, typename Value>
